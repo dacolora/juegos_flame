@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:colo_run/components/first_enemy.dart/enemy.dart';
+import 'components/first_enemy.dart/enemy.dart';
 import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'components/player/player.dart';
