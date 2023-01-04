@@ -3,16 +3,19 @@ import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
+import 'package:flame/particles.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'components/player/player.dart';
 import 'components/player/player_data.dart';
-import 'helpers/enums.dart';
+import 'components/world/world_obstacle.dart';
 
 class ColoRunGame extends FlameGame with HasCollisionDetection, HasDraggables {
   late Player _player;
   late PlayerData playerData;
   late JoystickComponent joystick;
+  late TiledComponent homeMap;
   @override
   static const id = "ColoRun";
   static const imageAssets = [
@@ -29,23 +32,34 @@ class ColoRunGame extends FlameGame with HasCollisionDetection, HasDraggables {
     await images.loadAll(imageAssets);
     _player = Player(images);
     playerData = await _readPlayerData();
-    // aca se carga la imagen en cache y se peude compartir en toda parte
+    homeMap = await TiledComponent.load('map.tmx', Vector2.all(32.0));
+    add(homeMap);
 
-    final parallaxBackGround = await loadParallaxComponent([
-      // la primera q se ponga es la de mas al fondo
-      ParallaxImageData("parallax/plx-1.png"),
-      ParallaxImageData("parallax/plx-2.png"),
-      ParallaxImageData("parallax/plx-3.png"),
-    ],
-        baseVelocity: Vector2(0, 50),
-        // velocidad del fondo
-        // eje x y eje y, se mueve horizontal
-        repeat: ImageRepeat.repeatY,
-        // estar repitiendo el fondo
-        velocityMultiplierDelta: Vector2(0, 1.4));
+    // final parallaxBackGround = await loadParallaxComponent([
+    //   // la primera q se ponga es la de mas al fondo
+    //   ParallaxImageData("parallax/plx-1.png"),
+    //   ParallaxImageData("parallax/plx-2.png"),
+    //   ParallaxImageData("parallax/plx-3.png"),
+    // ],
+    //     baseVelocity: Vector2(0, 50),
+    //     // velocidad del fondo
+    //     // eje x y eje y, se mueve horizontal
+    //     repeat: ImageRepeat.repeatY,
+    //     // estar repitiendo el fondo
+    //     velocityMultiplierDelta: Vector2(0, 1.4));
+    final obstacleGroup = homeMap.tileMap.getLayer<ObjectGroup>('Colision');
+
+    for (final obj in obstacleGroup!.objects) {
+      add(
+        WordObstacle(
+          position: Vector2(obj.x, obj.y),
+          size: Vector2(obj.width, obj.height),
+        ),
+      );
+    }
 
     camera.followComponent(_player,
-        worldBounds: Rect.fromLTRB(0, 0, size.x, size.y));
+        worldBounds: Rect.fromLTRB(0, 0, homeMap.size.x, homeMap.size.y));
 
     final knobPaint = BasicPalette.blue.withAlpha(200).paint();
     final backgroundPaint = BasicPalette.blue.withAlpha(100).paint();
@@ -77,10 +91,6 @@ class ColoRunGame extends FlameGame with HasCollisionDetection, HasDraggables {
 
     // Now it is safe to return the stored value.
     return playerDataBox.get('ColoRunGame.PlayerData')!;
-  }
-
-  void onJoypadDirectionChanged(Direction direction) {
-    _player.direction = direction;
   }
 
   // @override

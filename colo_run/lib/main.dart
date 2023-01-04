@@ -9,7 +9,6 @@ import 'widgets/hud.dart';
 
 import 'widgets/main_menu.dart';
 
-import 'helpers/joypad.dart';
 import 'game.dart';
 
 Future<void> main() async {

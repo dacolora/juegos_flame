@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:colo_run/components/player/player_data.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/particles.dart';
 import '../../game.dart';
-import '../../helpers/enums.dart';
 import 'package:flame/sprite.dart';
 import '../first_enemy.dart/enemy.dart';
 import 'package:flame/components.dart';
@@ -13,6 +15,8 @@ import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+
+import '../world/world_obstacle.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<ColoRunGame>, CollisionCallbacks {
@@ -25,8 +29,8 @@ class Player extends SpriteAnimationComponent
         ) {
     add(RectangleHitbox());
   }
-  Direction direction = Direction.none;
-  Direction _collisionDirection = Direction.none;
+  late JoystickDirection direction;
+  late JoystickDirection _collisionDirection;
   bool _hasCollided = false;
   final double _playerSpeed = 300.0;
   final double _animationSpeed = 0.15;
@@ -80,58 +84,68 @@ class Player extends SpriteAnimationComponent
     //asegurará de que todos los componentes de su juego se actualicen al mismo tiempo.
     //El delta representa cuánto tiempo ha pasado desde el último ciclo de actualización y se puede usar para mover al jugador de manera predecible.
     super.update(dt);
-    // print(position.x);
-    // print(size.x);
+    direction = gameRef.joystick.direction;
 
-    position.add(gameRef.joystick.delta * dt * 10);
-    movePlayer(gameRef.joystick.direction);
+    // position.clamp(
+    //     Vector2.zero() + size / 2 - size / 20, gameRef.size - size / 2);
+    // no se sale de la pantalla
+
+    // gameRef.add(paticleComponent);
+    movePlayer(gameRef.joystick.direction, dt);
   }
 
-  void movePlayer(JoystickDirection joystickDirection) {
+  void movePlayer(JoystickDirection joystickDirection, double dt) {
     switch (joystickDirection) {
       case JoystickDirection.up:
         if (canPlayerMoveUp()) {
           animation = _runUpAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
       case JoystickDirection.upLeft:
-        if (canPlayerMoveUp()) {
+        if (canPlayerMoveLeft()) {
           animation = _runLeftAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
       case JoystickDirection.upRight:
-        if (canPlayerMoveUp()) {
+        if (canPlayerMoveLeft()) {
           animation = _runRightAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
       case JoystickDirection.downRight:
-        if (canPlayerMoveUp()) {
+        if (canPlayerMoveLeft()) {
           animation = _runRightAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
       case JoystickDirection.downLeft:
-        if (canPlayerMoveUp()) {
+        if (canPlayerMoveLeft()) {
           animation = _runLeftAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
       case JoystickDirection.idle:
-        if (canPlayerMoveUp()) {
-          animation = _standingAnimation;
-        }
+        animation = _standingAnimation;
+        position.add(gameRef.joystick.delta * dt * 10);
         break;
       case JoystickDirection.right:
-        if (canPlayerMoveUp()) {
+        if (canPlayerMoveRight()) {
           animation = _runRightAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
       case JoystickDirection.down:
-        if (canPlayerMoveUp()) {
+        if (canPlayerMoveDown()) {
           animation = _runDownAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
       case JoystickDirection.left:
-        if (canPlayerMoveUp()) {
+        if (canPlayerMoveLeft()) {
           animation = _runUpAnimation;
+          position.add(gameRef.joystick.delta * dt * 10);
         }
         break;
     }
@@ -147,12 +161,16 @@ class Player extends SpriteAnimationComponent
     //   }
     // }
 
-    // if (other is WordObstacle) {
-    //   if (!_hasCollided) {
-    //     _hasCollided = true;
-    //     _collisionDirection = direction;
-    //   }
-    // }
+    if (other is WordObstacle) {
+      if (!_hasCollided) {
+        _hasCollided = true;
+
+        _collisionDirection = direction;
+        direction = gameRef.joystick.direction;
+        print('direction $direction');
+        print('_collisionDirection $_collisionDirection');
+      }
+    }
 
     if ((other is FirstEnemy) && (!isCrash)) {
       crash();
@@ -170,29 +188,33 @@ class Player extends SpriteAnimationComponent
     _hasCollided = false;
   }
 
-  bool canPlayerMoveUp() {
-    if (_hasCollided && _collisionDirection == Direction.up) {
-      return false;
-    }
-    return true;
-  }
-
-  bool canPlayerMoveDown() {
-    if (_hasCollided && _collisionDirection == Direction.down) {
-      return false;
-    }
-    return true;
-  }
-
   bool canPlayerMoveLeft() {
-    if (_hasCollided && _collisionDirection == Direction.left) {
+    if (_hasCollided &&
+        (_collisionDirection == JoystickDirection.left ||
+            _collisionDirection == JoystickDirection.upLeft ||
+            _collisionDirection == JoystickDirection.downLeft)) {
+      _hasCollided = false;
       return false;
     }
     return true;
   }
 
   bool canPlayerMoveRight() {
-    if (_hasCollided && _collisionDirection == Direction.right) {
+    if (_hasCollided && _collisionDirection == JoystickDirection.right) {
+      return false;
+    }
+    return true;
+  }
+
+  bool canPlayerMoveUp() {
+    if (_hasCollided && _collisionDirection == JoystickDirection.up) {
+      return false;
+    }
+    return true;
+  }
+
+  bool canPlayerMoveDown() {
+    if (_hasCollided && _collisionDirection == JoystickDirection.down) {
       return false;
     }
     return true;
