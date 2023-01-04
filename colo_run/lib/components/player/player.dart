@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:colo_run/components/cars/backGroundColiision.dart';
 import 'package:colo_run/components/player/player_data.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/collisions.dart';
@@ -7,7 +8,7 @@ import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
 import '../../game.dart';
 import 'package:flame/sprite.dart';
-import '../first_enemy.dart/enemy.dart';
+import '../cars/car.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
@@ -25,7 +26,7 @@ class Player extends SpriteAnimationComponent
   bool isCrash = false;
   Player(this.images)
       : super(
-          size: Vector2.all(45.0),
+          size: Vector2.all(38.0),
         ) {
     add(RectangleHitbox());
   }
@@ -99,53 +100,53 @@ class Player extends SpriteAnimationComponent
       case JoystickDirection.up:
         if (canPlayerMoveUp()) {
           animation = _runUpAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.upLeft:
         if (canPlayerMoveLeft()) {
           animation = _runLeftAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.upRight:
         if (canPlayerMoveLeft()) {
           animation = _runRightAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.downRight:
         if (canPlayerMoveLeft()) {
           animation = _runRightAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.downLeft:
         if (canPlayerMoveLeft()) {
           animation = _runLeftAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.idle:
         animation = _standingAnimation;
-        position.add(gameRef.joystick.delta * dt * 10);
+        position.add(gameRef.joystick.delta * dt * 5);
         break;
       case JoystickDirection.right:
         if (canPlayerMoveRight()) {
           animation = _runRightAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.down:
         if (canPlayerMoveDown()) {
           animation = _runDownAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.left:
         if (canPlayerMoveLeft()) {
           animation = _runUpAnimation;
-          position.add(gameRef.joystick.delta * dt * 10);
+          position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
     }
@@ -161,19 +162,27 @@ class Player extends SpriteAnimationComponent
     //   }
     // }
 
-    if (other is WordObstacle) {
+    // if (other is WordObstacle) {
+    //   if (!_hasCollided) {
+    //     _hasCollided = true;
+
+    //     _collisionDirection = direction;
+    //     direction = gameRef.joystick.direction;
+    //   }
+    // }
+
+    // if ((other is Car) && (!isCrash)) {
+    //   print(other.pixelsImage);
+    //   //  print('choque');
+    // }
+    if ((other is CarBackGround) && (!isCrash)) {
+      print('choque');
       if (!_hasCollided) {
         _hasCollided = true;
 
         _collisionDirection = direction;
         direction = gameRef.joystick.direction;
-        print('direction $direction');
-        print('_collisionDirection $_collisionDirection');
       }
-    }
-
-    if ((other is FirstEnemy) && (!isCrash)) {
-      crash();
     }
   }
 
@@ -200,21 +209,30 @@ class Player extends SpriteAnimationComponent
   }
 
   bool canPlayerMoveRight() {
-    if (_hasCollided && _collisionDirection == JoystickDirection.right) {
+    if (_hasCollided &&
+        (_collisionDirection == JoystickDirection.right ||
+            _collisionDirection == JoystickDirection.upRight ||
+            _collisionDirection == JoystickDirection.downRight)) {
       return false;
     }
     return true;
   }
 
   bool canPlayerMoveUp() {
-    if (_hasCollided && _collisionDirection == JoystickDirection.up) {
+    if (_hasCollided &&
+        (_collisionDirection == JoystickDirection.up ||
+            _collisionDirection == JoystickDirection.upLeft ||
+            _collisionDirection == JoystickDirection.upRight)) {
       return false;
     }
     return true;
   }
 
   bool canPlayerMoveDown() {
-    if (_hasCollided && _collisionDirection == JoystickDirection.down) {
+    if (_hasCollided &&
+        (_collisionDirection == JoystickDirection.down ||
+            _collisionDirection == JoystickDirection.downLeft ||
+            _collisionDirection == JoystickDirection.downRight)) {
       return false;
     }
     return true;
