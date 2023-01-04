@@ -4,15 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'components/button_change_position/button_change_postion.dart';
 import 'components/player/player_data.dart';
 import 'widgets/hud.dart';
 
 import 'widgets/main_menu.dart';
 
 import 'helpers/joypad.dart';
-import 'colo_run_game.dart';
+import 'game.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,17 +82,6 @@ class MainGameState extends State<MainGamePage> {
               },
               initialActiveOverlays: const [MainMenu.id],
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child:
-                    Joypad(onDirectionChanged: game.onJoypadDirectionChanged),
-              ),
-            ),
-            ButtonChangePosition(
-              game: game,
-            )
           ],
         ));
   }

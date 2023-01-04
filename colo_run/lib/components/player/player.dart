@@ -1,24 +1,27 @@
-import 'package:colo_run/components/espada/espada_component.dart';
 import 'package:colo_run/components/player/player_data.dart';
-import 'package:colo_run/components/world/world.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import '../../game.dart';
 import '../../helpers/enums.dart';
 import 'package:flame/sprite.dart';
-import '../diamont/diamont_component.dart';
 import '../first_enemy.dart/enemy.dart';
-import '../world/world_obstacle.dart';
-import '../world/world_collidable.dart';
+import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
+import 'package:flame/game.dart';
+import 'package:flame/palette.dart';
+import 'package:flame/parallax.dart';
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class Player extends SpriteAnimationComponent
-    with HasGameRef, CollisionCallbacks {
+    with HasGameRef<ColoRunGame>, CollisionCallbacks {
   Images images;
 
   bool isCrash = false;
   Player(this.images)
       : super(
-          size: Vector2.all(27.0),
+          size: Vector2.all(45.0),
         ) {
     add(RectangleHitbox());
   }
@@ -38,6 +41,14 @@ class Player extends SpriteAnimationComponent
   @override
   Future<void> onLoad() async {
     await _loadAnimations().then((_) => {animation = _standingAnimation});
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    x = size.x / 2; //24000
+    y = size.y / 4; //24000
+    //widthPhone = size.x;
+    super.onGameResize(size);
   }
 
   Future<void> _loadAnimations() async {
@@ -69,70 +80,61 @@ class Player extends SpriteAnimationComponent
     //asegurará de que todos los componentes de su juego se actualicen al mismo tiempo.
     //El delta representa cuánto tiempo ha pasado desde el último ciclo de actualización y se puede usar para mover al jugador de manera predecible.
     super.update(dt);
-    movePlayer(dt);
+    // print(position.x);
+    // print(size.x);
+
+    position.add(gameRef.joystick.delta * dt * 10);
+    movePlayer(gameRef.joystick.direction);
   }
 
-  void movePlayer(double delta) {
-    switch (direction) {
-      case Direction.up:
+  void movePlayer(JoystickDirection joystickDirection) {
+    switch (joystickDirection) {
+      case JoystickDirection.up:
         if (canPlayerMoveUp()) {
           animation = _runUpAnimation;
-          moveUp(delta);
         }
         break;
-      case Direction.down:
-        if (canPlayerMoveDown()) {
-          animation = _runDownAnimation;
-          moveDown(delta);
-        }
-        break;
-      case Direction.left:
-        if (canPlayerMoveLeft()) {
+      case JoystickDirection.upLeft:
+        if (canPlayerMoveUp()) {
           animation = _runLeftAnimation;
-          moveLeft(delta);
         }
         break;
-      case Direction.right:
-        if (canPlayerMoveRight()) {
+      case JoystickDirection.upRight:
+        if (canPlayerMoveUp()) {
           animation = _runRightAnimation;
-          moveRight(delta);
         }
         break;
-      case Direction.none:
-        animation = _standingAnimation;
-        break;
-      case Direction.rightUp:
-         if (canPlayerMoveRight()) {
+      case JoystickDirection.downRight:
+        if (canPlayerMoveUp()) {
           animation = _runRightAnimation;
-          moveRight(delta);
         }
         break;
-      case Direction.rightDown:
-        // TODO: Handle this case.
+      case JoystickDirection.downLeft:
+        if (canPlayerMoveUp()) {
+          animation = _runLeftAnimation;
+        }
         break;
-      case Direction.lefTop:
-        // TODO: Handle this case.
+      case JoystickDirection.idle:
+        if (canPlayerMoveUp()) {
+          animation = _standingAnimation;
+        }
         break;
-      case Direction.lefDown:
-        // TODO: Handle this case.
+      case JoystickDirection.right:
+        if (canPlayerMoveUp()) {
+          animation = _runRightAnimation;
+        }
+        break;
+      case JoystickDirection.down:
+        if (canPlayerMoveUp()) {
+          animation = _runDownAnimation;
+        }
+        break;
+      case JoystickDirection.left:
+        if (canPlayerMoveUp()) {
+          animation = _runUpAnimation;
+        }
         break;
     }
-  }
-
-  void moveDown(double delta) {
-    position.add(Vector2(0, delta * _playerSpeed));
-  }
-
-  void moveUp(double delta) {
-    position.add(Vector2(0, delta * -_playerSpeed));
-  }
-
-  void moveLeft(double delta) {
-    position.add(Vector2(delta * -_playerSpeed, 0));
-  }
-
-  void moveRight(double delta) {
-    position.add(Vector2(delta * _playerSpeed, 0));
   }
 
   @override
@@ -145,21 +147,16 @@ class Player extends SpriteAnimationComponent
     //   }
     // }
 
-    if (other is WordObstacle) {
-      if (!_hasCollided) {
-        _hasCollided = true;
-        _collisionDirection = direction;
-      }
-    }
+    // if (other is WordObstacle) {
+    //   if (!_hasCollided) {
+    //     _hasCollided = true;
+    //     _collisionDirection = direction;
+    //   }
+    // }
 
     if ((other is FirstEnemy) && (!isCrash)) {
       crash();
     }
-    if (other is EspadasComponent) {
-      print('choque 2');
-    }
-
-    if (other is DiamontComponent) {}
   }
 
   crash() {

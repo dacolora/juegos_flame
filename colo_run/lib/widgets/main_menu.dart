@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../colo_run_game.dart';
+import '../game.dart';
 import '/widgets/hud.dart';
 
 // This represents the main menu overlay.

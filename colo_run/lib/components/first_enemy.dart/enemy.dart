@@ -1,4 +1,3 @@
-import 'package:colo_run/components/world/world.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';

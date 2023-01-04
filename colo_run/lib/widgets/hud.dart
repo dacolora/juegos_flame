@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/player/player_data.dart';
-import '../colo_run_game.dart';
+import '../game.dart';
 
 // This represents the head up display in game.
 // It consists of, current score, high score,
