@@ -1,9 +1,7 @@
 import 'package:flame/cache.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
-import 'package:flame_tiled/flame_tiled.dart';
 
 class CarBackGround extends SpriteAnimationComponent with CollisionCallbacks {
   final Images images;

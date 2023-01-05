@@ -1,21 +1,9 @@
-import 'dart:math';
-
 import 'package:colo_run/components/cars/backGroundColiision.dart';
-import 'package:colo_run/components/player/player_data.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/particles.dart';
 import '../../game.dart';
 import 'package:flame/sprite.dart';
-import '../cars/car.dart';
-import 'package:flame/components.dart';
-import 'package:flame/extensions.dart';
-import 'package:flame/game.dart';
-import 'package:flame/palette.dart';
-import 'package:flame/parallax.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
 import '../world/world_obstacle.dart';
 
@@ -24,12 +12,6 @@ class Player extends SpriteAnimationComponent
   Images images;
 
   bool isCrash = false;
-  Player(this.images)
-      : super(
-          size: Vector2.all(38.0),
-        ) {
-    add(RectangleHitbox());
-  }
   late JoystickDirection direction;
   late JoystickDirection _collisionDirection;
   bool _hasCollided = false;
@@ -41,6 +23,13 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _runRightAnimation;
   late final SpriteAnimation _standingAnimation;
 
+  Player(this.images)
+      : super(
+          size: Vector2.all(38.0),
+        ) {
+    add(RectangleHitbox());
+  }
+
 //Todos los componentes del motor Flame tienen algunas funciones básicas,
 // como la carga y el renderizado dentro del bucle del juego al que están conectados. Por ahora, solo usarás
   @override
@@ -51,8 +40,7 @@ class Player extends SpriteAnimationComponent
   @override
   void onGameResize(Vector2 size) {
     x = size.x / 2; //24000
-    y = size.y / 4; //24000
-    //widthPhone = size.x;
+    y = size.y - size.y / 30; //24000
     super.onGameResize(size);
   }
 
@@ -87,12 +75,46 @@ class Player extends SpriteAnimationComponent
     super.update(dt);
     direction = gameRef.joystick.direction;
 
-    // position.clamp(
-    //     Vector2.zero() + size / 2 - size / 20, gameRef.size - size / 2);
+    position.clamp(
+        Vector2.zero() + size / 2 - size / 20, gameRef.size - size / 2);
+    //print(size / 2 - size / 20); [17.1,17.1]
+    // print(gameRef.size - size / 2);
     // no se sale de la pantalla
 
     // gameRef.add(paticleComponent);
     movePlayer(gameRef.joystick.direction, dt);
+  }
+
+  crash() {
+    isCrash = true;
+    gameRef.pauseEngine();
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollision(intersectionPoints, other);
+    // if (other is WordObstacle) {
+    //   if (!_hasCollided) {
+    //     _hasCollided = true;
+
+    //     _collisionDirection = direction;
+    //     direction = gameRef.joystick.direction;
+    //   }
+    // }
+
+    // if ((other is Car) && (!isCrash)) {
+    //   print(other.pixelsImage);
+    //   //  print('choque');
+    // }
+    if ((other is CarBackGround) && (!isCrash)) {
+      print('choque');
+      if (!_hasCollided) {
+        _hasCollided = true;
+
+        _collisionDirection = direction;
+        direction = gameRef.joystick.direction;
+      }
+    }
   }
 
   void movePlayer(JoystickDirection joystickDirection, double dt) {
@@ -110,13 +132,13 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case JoystickDirection.upRight:
-        if (canPlayerMoveLeft()) {
+        if (canPlayerMoveRight()) {
           animation = _runRightAnimation;
           position.add(gameRef.joystick.delta * dt * 5);
         }
         break;
       case JoystickDirection.downRight:
-        if (canPlayerMoveLeft()) {
+        if (canPlayerMoveRight()) {
           animation = _runRightAnimation;
           position.add(gameRef.joystick.delta * dt * 5);
         }
@@ -150,45 +172,6 @@ class Player extends SpriteAnimationComponent
         }
         break;
     }
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-    // if (other is WorldCollidable) {
-    //   if (!_hasCollided) {
-    //     _hasCollided = true;
-    //     _collisionDirection = direction;
-    //   }
-    // }
-
-    // if (other is WordObstacle) {
-    //   if (!_hasCollided) {
-    //     _hasCollided = true;
-
-    //     _collisionDirection = direction;
-    //     direction = gameRef.joystick.direction;
-    //   }
-    // }
-
-    // if ((other is Car) && (!isCrash)) {
-    //   print(other.pixelsImage);
-    //   //  print('choque');
-    // }
-    if ((other is CarBackGround) && (!isCrash)) {
-      print('choque');
-      if (!_hasCollided) {
-        _hasCollided = true;
-
-        _collisionDirection = direction;
-        direction = gameRef.joystick.direction;
-      }
-    }
-  }
-
-  crash() {
-    isCrash = true;
-    gameRef.pauseEngine();
   }
 
   @override

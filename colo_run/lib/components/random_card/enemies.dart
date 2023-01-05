@@ -6,7 +6,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 
 import '../../game.dart';
-import 'enemy_model.dart';
+import '../cars/car_model.dart';
 
 class Enemies extends Component with HasGameRef<ColoRunGame> {
   Images images;
