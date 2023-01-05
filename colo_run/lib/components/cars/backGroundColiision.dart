@@ -7,16 +7,18 @@ class CarBackGround extends SpriteAnimationComponent with CollisionCallbacks {
   final Images images;
   final double positionInitialX;
   final double positionInitialY;
+  final Vector2 tamano;
 
   late double widthPhone;
   late final SpriteAnimation _standingAnimation;
   final double _animationSpeed = 0.15;
   CarBackGround({
     required this.images,
+    required this.tamano,
     required this.positionInitialX,
     required this.positionInitialY,
   }) : super(
-          size: Vector2(60, 20),
+          size: Vector2(tamano.x / 2 + tamano.x / 4, tamano.y / 3),
         ) {
     add(RectangleHitbox());
   }

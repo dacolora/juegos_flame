@@ -48,14 +48,15 @@ class Car extends SpriteAnimationComponent with HasGameRef<ColoRunGame> {
     // que va haciendo
     carModel.isRightMoved ? position.x += 60 * dt : position.x -= 60 * dt;
 
-    if (position.x > widthPhone) {
+    if (-200 > position.x || position.x > widthPhone) {
       removeFromParent();
     }
 
     CarBackGround colission = CarBackGround(
         images: carModel.images,
-        positionInitialX: 0,
-        positionInitialY: carModel.pixelsImage.y / 2);
+        positionInitialX: carModel.pixelsImage.x / 4,
+        positionInitialY: carModel.pixelsImage.y - carModel.pixelsImage.y / 3,
+        tamano: carModel.tamano);
 
     add(colission);
     super.update(dt);

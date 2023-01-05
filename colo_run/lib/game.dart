@@ -77,7 +77,7 @@ class ColoRunGame extends FlameGame with HasCollisionDetection, HasDraggables {
     ;
     playerData = await _readPlayerData();
     homeMap = await TiledComponent.load('map.tmx', Vector2.all(32.0));
-    add(homeMap);
+    //add(homeMap);
 
     final obstacleGroup = homeMap.tileMap.getLayer<ObjectGroup>('Colision');
 
