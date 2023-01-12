@@ -56,7 +56,7 @@ class Car extends SpriteAnimationComponent with HasGameRef<ColoRunGame> {
         images: carModel.images,
         positionInitialX: carModel.pixelsImage.x / 4,
         positionInitialY: carModel.pixelsImage.y - carModel.pixelsImage.y / 3,
-        tamano: carModel.tamano);
+        tamano: carModel.pixelsImage);
 
     add(colission);
     super.update(dt);

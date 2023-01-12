@@ -122,53 +122,53 @@ class Player extends SpriteAnimationComponent
       case JoystickDirection.up:
         if (canPlayerMoveUp()) {
           animation = _runUpAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
       case JoystickDirection.upLeft:
         if (canPlayerMoveLeft()) {
           animation = _runLeftAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
       case JoystickDirection.upRight:
         if (canPlayerMoveRight()) {
           animation = _runRightAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
       case JoystickDirection.downRight:
         if (canPlayerMoveRight()) {
           animation = _runRightAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
       case JoystickDirection.downLeft:
         if (canPlayerMoveLeft()) {
           animation = _runLeftAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
       case JoystickDirection.idle:
         animation = _standingAnimation;
-        position.add(gameRef.joystick.delta * dt * 5);
+        position.add(gameRef.joystick.delta * dt * 2);
         break;
       case JoystickDirection.right:
         if (canPlayerMoveRight()) {
           animation = _runRightAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
       case JoystickDirection.down:
         if (canPlayerMoveDown()) {
           animation = _runDownAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
       case JoystickDirection.left:
         if (canPlayerMoveLeft()) {
           animation = _runUpAnimation;
-          position.add(gameRef.joystick.delta * dt * 5);
+          position.add(gameRef.joystick.delta * dt * 2);
         }
         break;
     }

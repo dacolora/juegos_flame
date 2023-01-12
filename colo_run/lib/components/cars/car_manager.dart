@@ -6,6 +6,14 @@ import 'package:colo_run/game.dart';
 import 'package:flame/components.dart';
 
 class CarManager extends Component with HasGameRef<ColoRunGame> {
+  double fila(int fila) {
+    if (fila > 0) {
+      return gameRef.size.y / 2 + gameRef.size.y / 3 + 100 - (fila * 100);
+    } else {
+      return gameRef.size.y / 2;
+    }
+  }
+
   late final List<CarModel> _data = [
     CarModel(
         images: gameRef.images,
@@ -13,16 +21,33 @@ class CarManager extends Component with HasGameRef<ColoRunGame> {
         isRightMoved: true,
         pixelsImage: Vector2(138, 92),
         tamano: Vector2(138, 92),
-        positionInitialX: -20,
-        positionInitialY: gameRef.size.y / 2),
+        positionInitialX: -138,
+        positionInitialY: fila(1)),
+    CarModel(
+        images: gameRef.images,
+        imageRoute: 'escarabajo_r.png',
+        isRightMoved: true,
+        pixelsImage: Vector2(79, 58),
+        tamano: Vector2(79, 58),
+        positionInitialX: -79,
+        positionInitialY: fila(1) + 35),
     CarModel(
       images: gameRef.images,
       imageRoute: 'retro_r.png',
       isRightMoved: true,
       pixelsImage: Vector2(167, 104),
       tamano: Vector2(167, 104),
-      positionInitialX: -20,
-      positionInitialY: gameRef.size.y / 2 + 100,
+      positionInitialX: -167,
+      positionInitialY: fila(2),
+    ),
+    CarModel(
+      images: gameRef.images,
+      imageRoute: 'chiquito_gray_r.png',
+      isRightMoved: true,
+      pixelsImage: Vector2(65, 53),
+      tamano: Vector2(65, 53),
+      positionInitialX: -65,
+      positionInitialY: fila(2) + 35,
     ),
     CarModel(
       images: gameRef.images,
@@ -30,8 +55,8 @@ class CarManager extends Component with HasGameRef<ColoRunGame> {
       isRightMoved: false,
       pixelsImage: Vector2(91, 62),
       tamano: Vector2(91, 62),
-      positionInitialX: gameRef.size.x + 100,
-      positionInitialY: gameRef.size.y / 2 + 200,
+      positionInitialX: gameRef.size.x + 91,
+      positionInitialY: fila(3),
     ),
     CarModel(
       images: gameRef.images,
@@ -39,8 +64,8 @@ class CarManager extends Component with HasGameRef<ColoRunGame> {
       isRightMoved: false,
       pixelsImage: Vector2(94, 65),
       tamano: Vector2(94, 65),
-      positionInitialX: gameRef.size.x + 100,
-      positionInitialY: gameRef.size.y / 2 + 200,
+      positionInitialX: gameRef.size.x + 94,
+      positionInitialY: fila(3),
     )
   ];
 
@@ -58,6 +83,7 @@ class CarManager extends Component with HasGameRef<ColoRunGame> {
   void spawnRandomEnemy() {
     /// Generate a random index within [_data] and get an [EnemyData].
     final randomIndex = _random.nextInt(_data.length);
+    
     final carData = _data.elementAt(randomIndex);
     final enemy = Car(carData);
 
