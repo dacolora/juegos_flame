@@ -1,0 +1,68 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "colo_run",
+            "cwd": "colo_run",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "colo_run (profile mode)",
+            "cwd": "colo_run",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "colo_run (release mode)",
+            "cwd": "colo_run",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "colo_run_1",
+            "cwd": "colo_run_1",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "colo_run_1 (profile mode)",
+            "cwd": "colo_run_1",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "colo_run_1 (release mode)",
+            "cwd": "colo_run_1",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "space_game",
+            "cwd": "space_game",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "space_game (profile mode)",
+            "cwd": "space_game",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "space_game (release mode)",
+            "cwd": "space_game",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+    ]
+}
